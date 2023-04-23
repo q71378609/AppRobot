@@ -4,8 +4,7 @@ class device:
     def __init__(self,s) -> None:
         out, err = subprocess.Popen('adb.exe devices',shell=True,stdout=subprocess.PIPE).communicate()
         out, err = subprocess.Popen('adb.exe devices',shell=True,stdout=subprocess.PIPE).communicate()
-        print('开始枚举设备...')
-        print(out)
+        print('开始连接设备...')
         pass
 
     def ADB(self,cmd,s):
