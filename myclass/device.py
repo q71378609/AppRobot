@@ -1,5 +1,6 @@
 import subprocess
-
+import cv2
+import numpy as np
 class device:
     def __init__(self,s) -> None:
         out, err = subprocess.Popen('adb.exe devices',shell=True,stdout=subprocess.PIPE).communicate()
@@ -25,6 +26,21 @@ class device:
         re = self.ADB('shell wm size',self.name)[15:].decode('utf-8').split('x',1)
         self.wm_x,self.wm_y = int(re[0]),int(re[1])
 
+    def get_sc(self):
+        self.screenshot = cv2.imdecode(np.frombuffer(self.ADB('shell screencap -p',self.name), np.uint8), cv2.IMREAD_COLOR)
+
+    def get_xy_img(self,img):
+        _img = cv2.imread(img, cv2.IMREAD_COLOR)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(cv2.matchTemplate(self.screenshot, _img, cv2.TM_CCORR_NORMED))
+        return max_val,max_loc
+    
+    def flash_and_find_img(self,img):
+        self.get_sc()
+        return self.get_xy_img(img)
+
     def reset(self):
         result = subprocess.Popen('adb.exe -s '+self.name+' shell input keyevent 187',shell=True,stdout=subprocess.PIPE)
         out, err = result.communicate()
+        _,xy = self.flash_and_find_img('icon\\device\\reset.png')
+        self.ADB('shell input tap {} {}'.format(xy[0],xy[1]),self.name)
+
