@@ -1,4 +1,9 @@
 from myclass.device import device
 
-a = device('emulator-5554')
+global_config = {
+    'emulator-5554':{
+    
+    }
+}
+a = device('emulator-5554',global_config['emulator-5554'])
 a.reset()

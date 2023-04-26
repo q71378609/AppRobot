@@ -2,13 +2,14 @@ import subprocess
 import cv2
 import numpy as np
 class device:
-    def __init__(self,s) -> None:
+    def __init__(self,s,config) -> None:
         out, err = subprocess.Popen('adb.exe devices',shell=True,stdout=subprocess.PIPE).communicate()
         out, err = subprocess.Popen('adb.exe devices',shell=True,stdout=subprocess.PIPE).communicate()
         out = out.decode('utf-8').split('\r\n')[1:-2]
         for i in out:
             if s == i.split('\t')[0]:
                 self.name = s
+                self.config = config
                 print('设备:\t'+s+'\t生成...')
                 self.get_wm_size()
                 print('设备分辨率:\tx_{}\ty_{}'.format(self.wm_x,self.wm_y))
